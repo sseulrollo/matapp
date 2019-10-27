@@ -29,7 +29,7 @@ namespace demoapp.Model
                 new { P_USER = "MES" }, 
                 commandType: CommandType.StoredProcedure).ToList<MenuModel>();
             }
-            catch(Exception ex) { }
+            catch { }
             return SelectModel;
         }
     }
