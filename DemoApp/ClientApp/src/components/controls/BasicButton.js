@@ -1,10 +1,10 @@
-import React from 'react'
-import {Button} from 'semantic-ui-react';
+import React from 'react';
+import Button from '@material-ui/core/Button';
 
 const BasicButton = (props) => (
     <Button 
-        basic 
-        fluid 
+       variant="contained" 
+        color="secondary" 
         type="submit" 
         size={props.size ? props.size : 'large'}
         onClick={props.onclick}
