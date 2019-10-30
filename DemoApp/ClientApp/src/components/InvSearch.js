@@ -1,5 +1,5 @@
 import React, { Component, createRef } from 'react'
-import { SearchCombo, SelectRowTable, Dtepicker, BasicButton, CloseButton} from './controls'
+import { SearchCombo, CheckTable, BasicButton, CloseButton, DatePicker} from './controls'
 import { connect } from 'react-redux';
 
 import { bindActionCreators } from 'redux';
@@ -108,7 +108,7 @@ class InvSearch extends Component {
     render() {
 
         const { header, data, selectParams, table_sp, searchFlag } = this.state
-
+        console.log(header, this.state)
         return (
             <div border='none'>
                 <div ref={this.contextRef} border='none'>
@@ -131,33 +131,29 @@ class InvSearch extends Component {
                                 <label key='lbltoWorkshop' >
                                     이동일자
                                     </label>
-                                <Dtepicker
-                                    id="workdate"
-                                    key="workdate"
-                                    onChange={this.handleDteChange}
-                                    value={this.getValue("workdate")} />
+                                <DatePicker value={this.getValue("workdate")}  />                                
                             </Form.Field>
                         </Form>
-                        <SelectRowTable id="tolots"
+                        
+                        <CheckTable  id="tolots"
                             initialHeader={header}
                             initialData={data}
                             loadSp={table_sp}
                             selectParams={selectParams}
-                            searchFlag={searchFlag}
-                        />
+                            searchFlag={searchFlag} />
                         <div style={{ height: '3em', border: 'none' }}></div>
                     </div>
                 </div>
                 <div
                     style={{
-                        position: 'fixed', margin: '0em', bottom: '0', left: '0',
+                        position: 'fixed', margin: '0em', bottom: '4.5em', left: '0',
                         border: 'none',
                         backgroundColor: 'white', padding: '0.5em', width: '100%'
                     }}>
                     <Button.Group widths='2' basic floated='left'>
                         <BasicButton name="btnOk" onclick={this.handelSearch} label="조회" />
                         <CloseButton history={this.props.history} />
-                    </Button.Group> */}
+                    </Button.Group>
                 </div>
             </div>
         )
