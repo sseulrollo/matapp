@@ -153,7 +153,7 @@ class InvSearch extends Component {
                     <Button.Group widths='2' basic floated='left'>
                         <BasicButton name="btnOk" onclick={this.handelSearch} label="조회" />
                         <CloseButton history={this.props.history} />
-                    </Button.Group>
+                    </Button.Group> 
                 </div>
             </div>
         )
