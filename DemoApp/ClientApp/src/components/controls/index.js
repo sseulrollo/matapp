@@ -5,6 +5,8 @@ import Loader from './Loader'
 import LabelInputField from './LabelInputField'
 import BasicButton from './BasicButton'
 import CloseButton from './CloseButton'
+import DatePicker from './DatePicker'
+import CheckTable from './CheckTable'
 
 export {
     SearchCombo,
@@ -13,5 +15,7 @@ export {
     Loader,
     LabelInputField,
     BasicButton,
-    CloseButton
+    CloseButton,
+    DatePicker,
+    CheckTable
 }

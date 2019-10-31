@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import NavBar from '../components/NavBar'
+import HeaderBar from '../components/HeaderBar'
+import BottomNav from '../components/BottomNav'
 import {Visibility, Button} from 'semantic-ui-react'
 
 
@@ -43,14 +44,21 @@ class Routes extends Component {
           onBottomVisible={this.unStickTopMenu}
           once={false}
         >
-          <NavBar menuFixed={menuFixed}/>
+          <HeaderBar props={this.props} menuFixed={menuFixed}/>
         </Visibility>
         {children}
         <div
-          style={{position:'fixed', padding:'0em',  margin:'0em', bottom:'4em', right:'0.5em', 
+          style={{position:'fixed', padding:'0em',  margin:'0em', bottom:'5em', right:'0.5em', 
                   border:'none'}}>
           <Button icon='arrow up' size="medium" circular onClick={this.scrollToTop} />
         </div>
+        <footer  
+          style={{
+              position: 'fixed', margin: '0em', bottom: '0em', left: '0',
+              border: 'none', backgroundColor: 'white', padding: '0em', width: '100%'
+          }}>          
+          <BottomNav props={this.props} />
+        </footer>
       </div>
     )
   }

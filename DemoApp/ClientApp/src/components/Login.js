@@ -51,7 +51,6 @@ class Login extends Component {
     
     handleLogin = (e) => {
         e.preventDefault();
-        console.log('jell')
       
         const { user_id, password } = this.state
         

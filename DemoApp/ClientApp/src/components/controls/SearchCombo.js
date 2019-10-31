@@ -56,6 +56,7 @@ class SearchCombo extends Component {
             if (where === ''){
                 this.props.codeRequest(groupid)
                     .then(()=> {
+                        console.log(this.props)
                         if (this.props.spCall.status === "SUCCESS"){
                             header = this.props.spCall.header
                             data = this.props.spCall.data;

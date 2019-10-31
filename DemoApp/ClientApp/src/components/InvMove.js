@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { SearchCombo, SelectRowTable, LabelInputField, BasicButton, CloseButton } from './controls'
+import { SearchCombo, SelectRowTable, LabelInputField, BasicButton, CloseButton, CheckTable } from './controls'
 import { connect } from 'react-redux';
 
 import { bindActionCreators } from 'redux';
@@ -81,7 +81,6 @@ class InvMove extends Component {
         e.preventDefault();
         
         this.setState({
-            selectedList: {},
             delFlag: 'save'
         })
     }
@@ -101,19 +100,21 @@ class InvMove extends Component {
     handleDel = (e) => {
         e.preventDefault();
         this.setState({
-            selectedList: {},
             delFlag: 'del'
         })
     }
+    
+    componentWillReceiveProps (nextProps, nextState) {
+        return nextProps !== this.props || nextState !== this.state
+    } 
 
     handleEventEnd = () => this.setState({delFlag: 'none'})
 
     getValue = (id) => this.state[id];
 
     render () {
-
-        const {header, data, selectedList, delFlag, tableParam, table_sp} = this.state
-        
+        const {data, delFlag, tableParam, table_sp} = this.state
+  
         return (
             <div  style={{ marginTop: '1em' }}>
                 <div style={{ backgroundColor: 'white', padding:'1em', border:'none' }}>
@@ -136,23 +137,21 @@ class InvMove extends Component {
                             placeholder='Lot No'
                             onChange={this.handleChange} />
                     </Form>
-                    <SelectRowTable id="tolots"
-                        initialHeader={header}
+                    <CheckTable id="tolots"
+                        header={initialHeader}
                         initialData={data}
                         loadSp={table_sp}
                         onSave={this.handleSave}
                         tableParam={tableParam}
-                        selectedList={selectedList}
                         delFlag={delFlag}
                         editEndEvent={this.handleEventEnd}
                         checkSame='true'
-                        checkValue="lot_no"
-                    />
+                        checkValue="lot_no" />
                     <div style={{ height: '3em', border: 'none' }}></div>
                 </div>
                 <div
                     style={{
-                        position: 'fixed', margin: '0em', bottom: '0', left: '0',
+                        position: 'fixed', margin: '0em', bottom: '4em', left: '0',
                         border: 'none', backgroundColor: 'white', padding: '0.5em', width: '100%'
                     }}>
                     <Button.Group widths='3'

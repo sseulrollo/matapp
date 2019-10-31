@@ -39,6 +39,8 @@ export const actionCreators = {
     loadSingleRequest: (spname, params) => async (dispatch, getState) => {   
         
         dispatch({type:DB_REQUEST});
+
+        console.log(spname, params)
         
         return await loadSingle(spname, params)
                 .then(
@@ -102,7 +104,7 @@ export const actionCreators = {
 export const reducer = (state, action) => {
     state = state || initialState;
     action = action || {type:DB_INIT};
-
+    console.log(action)
     if (action.type === DB_REQUEST)
         return {
             ...state,
@@ -141,7 +143,8 @@ export const reducer = (state, action) => {
                 header: []
             }            
         }
-    if (action.type === DB_DOUBLE_SELECT)
+    if (action.type === DB_DOUBLE_SELECT){
+    console.log('hello', state, action.response.data)
         return {
             ...state,
             spCall : {
@@ -150,7 +153,7 @@ export const reducer = (state, action) => {
                 message: action.response.err,
                 header: action.response.header
             }
-    }
+    }}
     else 
         return state;
 }
