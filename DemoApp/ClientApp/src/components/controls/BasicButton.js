@@ -4,7 +4,7 @@ import Button from '@material-ui/core/Button';
 const BasicButton = (props) => (
     <Button 
        variant="contained" 
-        color="secondary" 
+        color="inherit" 
         type="submit" 
         size={props.size ? props.size : 'large'}
         onClick={props.onclick}

@@ -21,6 +21,7 @@ const BottomNav = (props) => {
             <BottomNavigationAction label="Home" value="/" icon={<HomeIcon />} component={Link} to="/" />
             <BottomNavigationAction label="재고이동" value="/imove" icon={<ShoppingCartIcon />} component={Link} to="/imove" />
             <BottomNavigationAction label="이동이력" value="/isearch" icon={<HistoryIcon />} component={Link} to="/isearch" />
+            <BottomNavigationAction label="재고이동2" value="/itrans" icon={<ShoppingCartIcon />} component={Link} to="/itrans" />
         </BottomNavigation>
     )
 }

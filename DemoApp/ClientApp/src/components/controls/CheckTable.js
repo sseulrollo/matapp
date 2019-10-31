@@ -289,8 +289,6 @@ function CheckTable(props) {
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, tableData.length - page * rowsPerPage);
   
-  console.log(tableData)
-
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -319,8 +317,7 @@ function CheckTable(props) {
                   const labelId = `enhanced-table-checkbox-${index}`;
                   const keyValue = row["@@key"] ? row["@@key"] : row["@@KEY"] ? row["@@KEY"] : index
                   const isItemSelected = isSelected(keyValue);
-                  console.log(row, index)
-                  console.log(header)
+                  
                   return (
                     <TableRow
                       hover
@@ -332,39 +329,39 @@ function CheckTable(props) {
                       selected={isItemSelected}
                     >
                       {header.map((head, idx) => {
-                          console.log(head, 'je;')
-                          const headerTag = head.split(">").length > 1 ? head.split(">")[0] : "";
-                          if (head.toLowerCase() === "@@chk")
-                              return (
-                                <TableCell
-                                  padding="checkbox"
-                                  key= {'tc' + index + 'chk'}>
-                                      <Checkbox 
-                                          checked={isItemSelected} 
-                                          key= {'chk' + index + 'head'}
-                                      />
-                                </TableCell>);
-                          else if (head.startsWith("@@")) { }
-                          else if (headerTag === "")
-                              return (<TableCell key={'tc'+ index + 'n' + idx}>{row[head]}</TableCell>);
-                          else {
-                              const tags = headerTag.replace('<', '').toUpperCase();
-                              
-                              switch (tags) {
-                                  case "CHK":
-                                      return (
-                                        <TableCell padding="checkbox"
-                                          key= {'tc' + index + 'chk'}>
-                                          <Checkbox 
-                                              checked={isItemSelected} 
-                                              key= {'chk' + index + 'head'}
-                                          />
-                                        </TableCell>);
-                                      break;
-                                  default  :
-                                      break;
-                              }
+                        
+                        const headerTag = head.split(">").length > 1 ? head.split(">")[0] : "";
+                        if (head.toLowerCase() === "@@chk")
+                          return (
+                            <TableCell
+                              padding="checkbox"
+                              key= {'tc' + index + 'chk'}>
+                                  <Checkbox 
+                                      checked={isItemSelected} 
+                                      key= {'chk' + index + 'head'}
+                                  />
+                            </TableCell>);
+                        else if (head.startsWith("@@")) { }
+                        else if (headerTag === "")
+                          return (<TableCell key={'tc'+ index + 'n' + idx}>{row[head]}</TableCell>);
+                        else {
+                          const tags = headerTag.replace('<', '').toUpperCase();
+                          
+                          switch (tags) {
+                            case "CHK":
+                                return (
+                                  <TableCell padding="checkbox"
+                                    key= {'tc' + index + 'chk'}>
+                                    <Checkbox 
+                                        checked={isItemSelected} 
+                                        key= {'chk' + index + 'head'}
+                                    />
+                                  </TableCell>);
+                                break;
+                            default  :
+                                break;
                           }
+                        }
                       })}
                     </TableRow>
                   );

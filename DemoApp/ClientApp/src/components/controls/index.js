@@ -7,6 +7,7 @@ import BasicButton from './BasicButton'
 import CloseButton from './CloseButton'
 import DatePicker from './DatePicker'
 import CheckTable from './CheckTable'
+import CardList from './CardList'
 
 export {
     SearchCombo,
@@ -17,5 +18,6 @@ export {
     BasicButton,
     CloseButton,
     DatePicker,
-    CheckTable
+    CheckTable,
+    CardList
 }

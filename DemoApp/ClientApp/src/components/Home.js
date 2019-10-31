@@ -39,7 +39,7 @@ const Home = () => {
               </Grid>
             </Grid>
 
-            <Grid container marginTop={3}>         
+            <Grid container >         
               <Grid item xs={12} sm container>      
                 <Grid item xs container direction="column" spacing={1}>
                   <Grid item xs>
@@ -50,7 +50,7 @@ const Home = () => {
               </Grid>
             </Grid>
 
-            <Grid container marginTop={3}>         
+            <Grid container >         
               <Grid item xs={12} sm container>      
                 <Grid item xs container direction="column" spacing={1}>
                   <Grid item xs>
@@ -70,7 +70,7 @@ const Home = () => {
 
             <Typography variant="subtitle1">Design framework 수정</Typography>
             <Typography variant="body1">Semantic-ui-react에서 material-ui로 변경</Typography>
-            <Typography variant="body2" marginTop={3}>작업진행: 김시호, 노슬기</Typography>
+            <Typography variant="body2" >작업진행: 김시호, 노슬기</Typography>
             <Typography variant="body2">작업검수: 이성근</Typography>
           </Paper>
         </Grid>

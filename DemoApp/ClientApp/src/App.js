@@ -14,6 +14,7 @@ import Login from './components/Login'
 import Home from './components/Home'
 import InvMove from './components/InvMove'
 import InvSearch from './components/InvSearch'
+import InvTrans from './components/InvTrans'
 
 const App = ({ history }) => {
   if(Cookies.get('key') === undefined || Cookies.get('key') === ""){
@@ -45,6 +46,7 @@ const App = ({ history }) => {
           <Route exact path="/" component={Home} />
           <Route path="/imove" component={InvMove} />
           <Route path="/isearch" component={InvSearch} />
+          <Route path="/itrans" component={InvTrans} />
         </Routes>
         <ToastContainer
               position="bottom-center"

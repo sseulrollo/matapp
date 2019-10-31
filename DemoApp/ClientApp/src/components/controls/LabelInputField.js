@@ -21,7 +21,7 @@ export default function OutlinedTextFields(props) {
   return (
       <TextField
         // id={'txt' + props.name}
-        id="outlined-email-input"
+        key={"outlined-email-input" + props.name}
         name={props.name}
         label={props.placeholder}
         placeholder={props.placeholder}

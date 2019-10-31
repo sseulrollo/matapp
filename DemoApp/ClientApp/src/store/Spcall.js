@@ -39,8 +39,6 @@ export const actionCreators = {
     loadSingleRequest: (spname, params) => async (dispatch, getState) => {   
         
         dispatch({type:DB_REQUEST});
-
-        console.log(spname, params)
         
         return await loadSingle(spname, params)
                 .then(
