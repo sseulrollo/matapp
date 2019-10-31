@@ -7,7 +7,20 @@ import { bindActionCreators } from 'redux';
 import Cookies from 'js-cookie';
 import { toast } from 'react-toastify'
 import {LabelInputField, BasicButton } from './controls'
+import styled from "styled-components";
+import img from '../images/back_1.png';
 
+// 로그인 폼 백그라운드 화면 
+const Container = styled.div`
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+/* background:  url(https://source.unsplash.com/random/1920x1080); */
+background:  url(${img});
+background-size: cover;
+`;
 
 class Login extends Component {
 
@@ -52,12 +65,20 @@ class Login extends Component {
     }
 
     render() {
-    return (<Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
-        <Grid.Column style={{maxWidth: 450}}>
-            <Header as='h2' color='teal' textAlign='center'>
+    return (
+  <Container>
+    <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
+        <Grid.Column style={{maxWidth: 300}}>
+                {/* 아이콘 생성 */}
+                <i class="yellow huge icons">
+                <i class="yellow big circle outline icon"></i>
+                <i class="yellow mobile alternate icon"></i>
+                </i>
+            <Header as='h1' color='yellow' textAlign='center'>
+             안드로이드 PDA
             </Header>
             <Form size='large'>
-                <Segment stacked>
+                {/* <Segment stacked> */}
                     <LabelInputField
                         name='user_id'
                         value={this.state.user_id}
@@ -72,10 +93,11 @@ class Login extends Component {
                         type='password'
                         onChange={this.handleChange} />
                     <BasicButton onclick={this.handleLogin} label="Log In" />
-                </Segment>
+                {/* </Segment> */}
             </Form>
         </Grid.Column>
-    </Grid>)}
+    </Grid>
+    </Container>)}
 }
 
 Login.propTypes = {

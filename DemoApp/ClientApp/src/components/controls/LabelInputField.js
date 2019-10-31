@@ -9,7 +9,7 @@ const useStyles = makeStyles(theme => ({
     flexWrap: 'wrap',
   },
   textField: {
-    marginLeft: theme.spacing(1),
+    // marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
   },
 
@@ -30,7 +30,7 @@ export default function OutlinedTextFields(props) {
         className={classes.textField}
         type={props.type ? 'password' : 'text' }
         //type="password"
-        margin="normal"
+        margin="dense"
         variant="outlined"
       />
   );
