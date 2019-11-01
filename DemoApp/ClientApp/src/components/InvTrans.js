@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { SearchCombo, LabelInputField, BasicButton, CloseButton, CardList } from './controls'
+import { SearchCombo, Selects, LabelInputField, BasicButton, CloseButton, CardList } from './controls'
 import { connect } from 'react-redux';
 
 import { bindActionCreators } from 'redux';
@@ -127,11 +127,11 @@ class InvTrans extends Component {
                             </Typography>
                         </Grid>
                         <Grid xs={8} item>
-                            <SearchCombo
+                            <Selects
                                 id="work_shop"
                                 key="work_shop"
-                                className="form-control"
-                                placeholder="작업장"
+                                // className="form-control"
+                                // placeholder="작업장"
                                 groupid="LOC_TYPE"
                                 onChange={this.handleCboChange}
                                 value={this.getValue("work_shop")} />

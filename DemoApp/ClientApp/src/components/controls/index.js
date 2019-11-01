@@ -8,6 +8,7 @@ import CloseButton from './CloseButton'
 import DatePicker from './DatePicker'
 import CheckTable from './CheckTable'
 import CardList from './CardList'
+import Selects from './Selects'
 
 export {
     SearchCombo,
@@ -19,5 +20,6 @@ export {
     CloseButton,
     DatePicker,
     CheckTable,
-    CardList
+    CardList,
+    Selects
 }
