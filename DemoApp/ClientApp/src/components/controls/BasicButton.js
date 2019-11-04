@@ -32,7 +32,7 @@ const useStyles = makeStyles(theme => ({
           <Button 
           className={classes.button}
           variant="contained" 
-         color="secondary" 
+         color="inherit" 
          type="submit" 
          //size={props.size ? props.size : 'large'}
          onClick={props.onclick}

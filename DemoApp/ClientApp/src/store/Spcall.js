@@ -74,8 +74,9 @@ export const actionCreators = {
     },
     
     codeDynamicReq : (groupid, where) => async (dispatch, getState) => {
-        if(groupid === getState.groupid || where === getState.where)
-            return;
+        
+        if(groupid === undefined && where === undefined)
+            return;        
         
         dispatch({type:DB_REQUEST});
 
@@ -102,7 +103,7 @@ export const actionCreators = {
 export const reducer = (state, action) => {
     state = state || initialState;
     action = action || {type:DB_INIT};
-    console.log(action)
+    
     if (action.type === DB_REQUEST)
         return {
             ...state,
@@ -142,7 +143,6 @@ export const reducer = (state, action) => {
             }            
         }
     if (action.type === DB_DOUBLE_SELECT){
-    console.log('hello', state, action.response.data)
         return {
             ...state,
             spCall : {

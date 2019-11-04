@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Select, MenuItem, InputLabel } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
+import { notifySuccess, notifyWarn } from './noti'
+
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { actionCreators } from '../../store/Spcall';
@@ -22,23 +24,28 @@ const Selects = (props) => {
     const [selectData, setData] = useState([]);
     const [header, setHeader] = useState([]);
     const [bindFlag, setBindFlag] = useState(false);
+    const [stopFlag, setStopFlag] = useState(false);
 
-    const inputLabel = useRef(null);
+    const inputLabel = useRef(props.inputLabel);
 
     useEffect(() => {
-        setLabelWidth(inputLabel.current.offsetWidth);
+        setLabelWidth(inputLabel.current ? inputLabel.current.offsetWidth ? inputLabel.current.offsetWidth : '5em' : '5em');
     }, [])
 
     const handleChange = event => {
-        props.onChange(this.props.id, value);
+        props.onChange(props.id, value);
         setValue(event.target.value);
     }
 
     useEffect(() => {
 
-        if(bindFlag) {
-            bindingData();
-        } else if (selectData.length === 0) {
+        if (bindFlag) {
+            if(props.spCall.status === "SUCCESS") {
+                bindingData();
+            } else if (props.spCall.status === "FAIL") {
+                notifyWarn (props.spCall.message)
+            } 
+        }else if (selectData.length === 0 && !stopFlag) {
             if(props.where === '')
                 getCodeData();
             else
@@ -47,52 +54,57 @@ const Selects = (props) => {
     })
 
     const bindingData = () => {
+        setBindFlag(false);
         let comboData = []
         comboData.push({key:'', text:''})
-        setHeader(props.spCall.header);
 
+        const head = props.spCall.header;
         const data = props.spCall.data;
 
+        console.log(comboData, data, head)
         if(data.length > 0)
             data.forEach(row => {
                 comboData.push({
-                    key: row[header[0]],
-                    text: row[header[1]]
+                    key: row[head[0]],
+                    text: row[head[1]]
                 })
             });
-                        
+                               
+        setHeader(head);
         setData(comboData)
     }
 
     const getCodeData = () => {
+        setStopFlag(true)
         props.codeRequest(props.groupid)
             .then(()=> {
-                if (props.spCall.status === "SUCCESS"){
-                    setBindFlag(true);                    
-                }    
+                    setBindFlag(true);             
             })
     }
 
     const getDynamicData = () => {
+        setStopFlag(true)
         props.codeDynamicReq(props.groupid, props.where)
         .then(()=> {
-            if (props.spCall.status === "SUCCESS"){
                 setBindFlag(true);                    
-            }    
         })
     }
     const classes = useStyles
 
     return (
         <Select
-            labelId={'lblSelect' + props.id}
+            labelid={'lblSelect' + props.id}
             value={value}
             onChange={handleChange}
             displayEmpty
+            fullWidth = {true}
+            key={props.key}
             className={classes.selectEmpty}
+            placeholder={props.placeholder}
+            inputlabel={inputLabel}//{props.inputlabel}
         >
             {selectData.map(item => 
-                <MenuItem value={item.key}>
+                <MenuItem value={item.key} key={'item' + props.key + item.key}>
                     {item.text}
                 </MenuItem>
             )}
@@ -104,4 +116,4 @@ const Selects = (props) => {
 export default connect(
     state => state.spCall,
     dispatch => bindActionCreators(actionCreators, dispatch)
-  )(Select);
+  )(Selects);

@@ -4,10 +4,9 @@ import { connect } from 'react-redux';
 
 import { bindActionCreators } from 'redux';
 import { actionCreators } from '../store/Spcall';
-import { Form, Button } from 'semantic-ui-react'
 
 import {toast} from 'react-toastify';
-import { Typography, Grid } from '@material-ui/core';
+import { Typography, Grid, InputLabel } from '@material-ui/core';
 
 const initialHeader = [
     "@@CHK",
@@ -28,6 +27,8 @@ const initialData = [
         "@@KEY": "" 
     }
 ]
+
+const inputLabel = <InputLabel />
 
 class InvTrans extends Component {
 
@@ -122,7 +123,7 @@ class InvTrans extends Component {
                     
                     <Grid container spacing={1} justify="center" alignItems="stretch">
                         <Grid xs={4} item >
-                            <Typography component="p" gutterBottom nowrap>
+                            <Typography component="p" gutterBottom>
                                 이동 할 작업장
                             </Typography>
                         </Grid>
@@ -131,13 +132,14 @@ class InvTrans extends Component {
                                 id="work_shop"
                                 key="work_shop"
                                 // className="form-control"
-                                // placeholder="작업장"
+                                placeholder="작업장"
                                 groupid="LOC_TYPE"
                                 onChange={this.handleCboChange}
+                                inputlabel ={<InputLabel value={this.state.work_shop ? this.state.work_shop : '작업장' }/>}
                                 value={this.getValue("work_shop")} />
                         </Grid>
                         <Grid item xs={4}>
-                            <Typography component="p" nowrap>
+                            <Typography component="p">
                                 Lot No
                             </Typography>
                         </Grid>
@@ -149,16 +151,16 @@ class InvTrans extends Component {
                                 placeholder='Lot No'
                                 onChange={this.handleChange} />
                         </Grid>
-                        <Grid item xs={4}>
+                        <Grid item xs={3}>
                             
                         </Grid>
-                        <Grid item xs={8}>
+                        <Grid item xs alignItems="baseline">
                             <BasicButton name="btnOk" onclick={this.handleOk} label="저장" />
-                        {/* </Grid>
-                        <Grid item xs={3}> */}
+                        </Grid>
+                        <Grid item xs>
                             <BasicButton name="btnDel" onclick={this.handleDel} label="삭제" />
-                        {/* </Grid>
-                        <Grid item xs={3}> */}
+                        </Grid>
+                        <Grid item xs>
                             <CloseButton history={this.props.history} />
                         </Grid>
                     </Grid>
@@ -174,7 +176,7 @@ class InvTrans extends Component {
                         checkSame='true'
                         checkValue="lot_no" 
                         main="lot_no"/>
-                    <div style={{ height: '3em', border: 'none' }}></div>
+                    <div style={{ height: '4em', border: 'none' }}></div>
                 </div>
                 {/* <div
                     style={{

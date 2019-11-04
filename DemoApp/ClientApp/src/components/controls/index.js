@@ -9,6 +9,7 @@ import DatePicker from './DatePicker'
 import CheckTable from './CheckTable'
 import CardList from './CardList'
 import Selects from './Selects'
+import { notifySuccess, notifyWarn } from './noti'
 
 export {
     SearchCombo,
@@ -21,5 +22,6 @@ export {
     DatePicker,
     CheckTable,
     CardList,
-    Selects
+    Selects,
+    notifySuccess, notifyWarn
 }

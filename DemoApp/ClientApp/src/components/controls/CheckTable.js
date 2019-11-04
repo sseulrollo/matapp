@@ -315,7 +315,7 @@ function CheckTable(props) {
               {stableSort(tableData, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const labelId = `enhanced-table-checkbox-${index}`;
+                  const labelid = `enhanced-table-checkbox-${index}`;
                   const keyValue = row["@@key"] ? row["@@key"] : row["@@KEY"] ? row["@@KEY"] : index
                   const isItemSelected = isSelected(keyValue);
                   

@@ -56,13 +56,15 @@ namespace demoapp.Controllers
         }
 
 
-        [HttpGet("[action]")]
+        [HttpPost("[action]")]
         [Description("Code Load 기능")]
-        public JsonResult CodeDynamic(string args)
+        // public JsonResult CodeDynamic(string args)
+        public JsonResult CodeDynamic([FromBody]JObject args)
         {
             CallDb callDb = new CallDb();
+            string arg = Json(JObject.Parse(args["body"].ToString())["args"].ToString()).Value.ToString();
 
-            JObject json = JObject.Parse(args);
+            JObject json = JObject.Parse(arg);
             Dictionary<string, object> paramsDic = SettingParams(json);
 
             JObject sqlResult = callDb.LoadSqlSingle("pk_atm_sp_code", paramsDic);

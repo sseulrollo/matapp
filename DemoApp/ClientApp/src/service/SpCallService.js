@@ -61,9 +61,11 @@ export function getCodeDynamic(groupid, where) {
     const param = {
         args: {
             Group_Id: groupid,
-            Where: where
+            Where: where === undefined || where === null ? {} : where,
         }
     }
+
+    console.log(groupid, where)
     
     return requestCall('api/Common/CodeDynamic', param)
 }
