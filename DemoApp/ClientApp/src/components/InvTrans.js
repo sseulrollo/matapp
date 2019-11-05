@@ -30,6 +30,8 @@ const initialData = [
 
 const inputLabel = <InputLabel />
 
+// 현재 어떤 이벤트 후 param에 값이 reset 되지 않음 
+// 새 값만 받아서 덮어쓰는 구조로 작성 됨.
 class InvTrans extends Component {
 
     state = {
@@ -58,12 +60,15 @@ class InvTrans extends Component {
     notifyWarn = msg => toast.warn(msg, { autoClose: true });
     notifySuccess = msg => toast.success(msg, { autoClose: true })
 
+    shouldComponentUpdate (nextProps, nextState) {
+        return nextProps !== this.props || nextState !== this.state
+    }
 
     handleChange = (e) => {
         e.preventDefault();
         if(e.target.value === '')
             return;
-
+        
         this.setState({
             tableParam:{
                 [e.target.name]: e.target.value
@@ -74,6 +79,9 @@ class InvTrans extends Component {
 
 
     handleCboChange = (id, value) => {
+        if(value === '')
+            return;
+            
         this.setState({
             [id]:value
         })
@@ -105,10 +113,7 @@ class InvTrans extends Component {
             delFlag: 'del'
         })
     }
-    
-    componentWillReceiveProps (nextProps, nextState) {
-        return nextProps !== this.props || nextState !== this.state
-    } 
+   
 
     handleEventEnd = () => this.setState({delFlag: 'none'})
 
@@ -116,7 +121,7 @@ class InvTrans extends Component {
 
     render () {
         const {data, delFlag, tableParam, table_sp, header} = this.state;
-
+        console.log(tableParam)
         return (
             <div  style={{ marginTop: '1em' }}>
                 <div style={{ backgroundColor: 'white', padding:'1em', border:'none' }}>
@@ -154,7 +159,7 @@ class InvTrans extends Component {
                         <Grid item xs={3}>
                             
                         </Grid>
-                        <Grid item xs alignItems="baseline">
+                        <Grid item xs >
                             <BasicButton name="btnOk" onclick={this.handleOk} label="저장" />
                         </Grid>
                         <Grid item xs>

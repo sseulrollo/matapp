@@ -17,6 +17,7 @@ const useStyles = makeStyles(theme => ({
       marginTop: theme.spacing(2),
     },
   }));
+  
 
 const Selects = (props) => {
     const [value, setValue] = useState("");
@@ -33,7 +34,8 @@ const Selects = (props) => {
     }, [])
 
     const handleChange = event => {
-        props.onChange(props.id, value);
+        props.onChange(props.id, event.target.value);
+        
         setValue(event.target.value);
     }
 

@@ -1,22 +1,16 @@
-import React, {useState, Fragment, useEffect} from 'react';
+import React, {useState, Fragment, useEffect, useRef, createRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Card, CardActions, CardContent, Typography, CardHeader, Checkbox } from '@material-ui/core';
-
-import { toast } from 'react-toastify'
 
 import { connect } from 'react-redux';
 
 import { bindActionCreators } from 'redux';
 import { actionCreators } from '../../store/Spcall';
+import { notifyWarn, notifySuccess } from "./noti";
 
 const useStyles = makeStyles({
     card: {
-        minWidth: 275,
-    },
-    bullet: {
-        display: 'inline-block',
-        margin: '0 2px',
-        transform: 'scale(0.8)',
+        minWidth: 150,
     },
     title: {
         fontSize: 14,
@@ -26,48 +20,26 @@ const useStyles = makeStyles({
     },
 }); 
 
-const notifyWarn = msg => toast.warn(msg, { autoClose: true})
-const notifySuccess = msg => toast.success(msg, { autoClose: true})
-
-const CardControl = ({data, handleCheck}) => {
-    const classes = useStyles();
-    
-    return (
-        <Card className={classes.card}>
-            <CardHeader 
-                title={data.main} 
-                action={
-                    <Checkbox 
-                        key={data.key} 
-                        onClick={handleCheck} />
-                }
-            />
-            <CardContent>                
-                {data.content.map((item, index) => {
-                    return (
-                    <Typography variant="body2" component="p" key={data.id + 'content' + index}>
-                        {item.id + ' : ' + item.value}
-                    </Typography>)})}
-            </CardContent>
-        </Card>
-    )
-}
-
 const CardList = (props) => {
     const [data, setData] = useState([]);
     const [header, setHeader] = useState(props.header)
     const [title, setTitle] = useState(props.title ? props.title : "");
     const [main, setMain] = useState(props.main)
-    const [listUp, setListUp] = useState(false);
-    const [tableParam, setTableParam] = useState(props.tableParam);
+    const [listUp, setListUp] = useState(undefined);
+    const [tableParam, setTableParam] = useState({});
     const [selected, setSelected] = useState([])
 
+    const setAllClear = createRef();
+
     useEffect(() => {
-        if(listUp)
-            changeData(props.spCall.data);
-        else if (tableParam !== props.tableParam && props.tableParam !== {}){
+        if(listUp){
+            if (props.spCall.status === "SUCCESS")
+                changeData(props.spCall.data);
+            else
+                notifyWarn(props.spCall.message)
+            setListUp(undefined)
+        } else if (tableParam !== props.tableParam && props.tableParam !== {}){
             getAddData(props.tableParam)
-            setTableParam(props.tableParam)
         } else if(props.selectParams !== [] && props.searchFlag){  
             getData(props.selectParams);
         } else if(props.delFlag !== 'none')
@@ -77,18 +49,21 @@ const CardList = (props) => {
     const getAddData = (tableParam) => {
 
         const {loadSp, checkSame, checkValue} = props;
+        setTableParam(props.tableParam)
         
+        if(checkSame && tableParam[checkValue] === "")
+            return;
+
         if(checkSame && checkValue !== "" && data.length > 0){
             if(checkSame && 
-                (data.filter(r=> r["@@key"] === data[checkValue]).length > 0
-                || data.filter(r=> r["@@KEY"] === data[checkValue]).length > 0)){
+                data.filter(r=> r.main === tableParam[checkValue]).length > 0) {
                 {notifyWarn('이미 스캔한 데이터입니다.')}
                 return;
-            }
-        }        
-    
+            } 
+        }         
+
         return props.loadSingleRequest(loadSp, tableParam)
-                .then(() => setListUp(true))
+                .then(() => setListUp('add'))
                 .catch(e => {notifyWarn(e)}
                 )
       }
@@ -97,7 +72,7 @@ const CardList = (props) => {
         const {loadSp} = props;
        
         return props.loadSingleRequest(loadSp, params)
-        .then(() => setListUp(true));
+        .then(() => setListUp('all'));
       }
     
       const removeData = (flag) => {
@@ -114,18 +89,51 @@ const CardList = (props) => {
 
         let lst = data;
         // 소문자 @@key check 도 필요
-        selected.map(item => lst = lst.filter(row => row["@@KEY"] !== item))
+        selected.map(item => lst = lst.filter(row => row.id !== item))
     
         changeData(lst);
-        // setAllClear.current.click();
+        setAllClear.current.click();
         props.editEndEvent();    
     }
-    
 
-    const changeData = (data) => {
+    const handleSelectAllClick = event => {
+        if (event.target.checked) {     
+          const newSelecteds = data.map((n, index) => n.id);
+          setSelected(newSelecteds);
+          return;
+        }
+        setSelected([]);
+    };
+    
+    const handleClick = (e, id) => {
+        const selectedIndex = selected.indexOf(id);
+        let newSelected = [];
+
+        if (selectedIndex === -1) {
+            newSelected = newSelected.concat(selected, id);
+        } else if (selectedIndex === 0) {
+            newSelected = newSelected.concat(selected.slice(1));
+        } else if (selectedIndex === selected.length - 1) {
+            newSelected = newSelected.concat(selected.slice(0, -1));
+        } else if (selectedIndex > 0) {
+            newSelected = newSelected.concat(
+            selected.slice(0, selectedIndex),
+            selected.slice(selectedIndex + 1),
+            );
+        }
+
+        setSelected(newSelected);
+    };
+    
+    const isSelected = id => selected.indexOf(id) !== -1;
+
+    const changeData = (paramData) => {
         let returnData = [];
 
-        data.map((item, index) => {
+        if(listUp === 'add')
+            returnData = data;
+
+        paramData.map((item, index) => {
 
             let contentList = [];
             let isCheck = false;
@@ -143,20 +151,61 @@ const CardList = (props) => {
                     setId = item["@@KEY"] ? item["@@KEY"] : item["@@key"]
                 }
             })}
-            
-            returnData.push({
+
+            const arg = {
                 main : item[main] ? item[main] : item[main.toUpperCase()] ? item[main.toUpperCase()] : item[main.toLowerCase()],
                 id: setId,
                 content : contentList,
                 check: isCheck
-            })
+            }
+                        
+            if (data.length > 0) {
+                returnData = returnData.concat(arg)
+            } else {
+                returnData.push(arg)
+            }
         })
         setData(returnData);
-        setListUp(false);
     }
+
+    const classes = useStyles();
     
     return (
-        data.map(item => <CardControl data={item}  key={'row'+ data.id}/>)
+        <Fragment>
+            <div>
+                <Typography component="h4" >
+                    <Checkbox 
+                        key={"cboall_" + props.key} 
+                        onChange={handleSelectAllClick}
+                        checked={selected.length > 0  && selected.length === data.length}
+                        ref={setAllClear}
+                        />
+                    전체 선택
+                </Typography>
+            </div>
+            {data && data.length > 0 ? data.map(item => 
+                <Card 
+                    className={classes.card}
+                    key={'card' + item.id}>
+                    <CardHeader 
+                        title={item.main} 
+                        action={
+                            <Checkbox 
+                                key={item.id}
+                                checked={isSelected(item.id)}
+                                onClick={e => handleClick(e, item.id)} />
+                        }
+                    />
+                    <CardContent>                
+                        {item.content.map((li, index) => {
+                            return (
+                            <Typography variant="body2" component="p" key={item.id + 'content' + index}>
+                                {li.id + ' : ' + li.value}
+                            </Typography>)})}
+                    </CardContent>
+                </Card>
+            ) : <div></div>}
+        </Fragment>
     )
 }
 
