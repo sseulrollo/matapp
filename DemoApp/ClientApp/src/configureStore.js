@@ -5,6 +5,7 @@ import createRootReducer from './reducer'
 import * as Authentication from './store/Authentication'
 import * as Spcall from './store/Spcall'
 import thunk from 'redux-thunk';
+import * as HandlePage from './store/HandlePage'
 
 export const history = createBrowserHistory()
 
@@ -12,7 +13,8 @@ export default function configureStore(preloadedState) {
 
   const reducers = {
     spCall: Spcall.reducer,
-    login: Authentication.reducer
+    login: Authentication.reducer,
+    pages: HandlePage.reducer 
   };
 
   const middleware = [

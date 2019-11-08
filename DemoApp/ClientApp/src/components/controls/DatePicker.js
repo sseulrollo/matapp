@@ -1,25 +1,44 @@
-import React, { useState, useEffect, Fragment } from 'react';
-import DayPicker from 'react-day-picker';
-import 'react-day-picker/lib/style.css';
-import DayPickerInput from 'react-day-picker/DayPickerInput';
-import dateFnsFormat from 'date-fns/format';
+import React, { useState } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import TextField from '@material-ui/core/TextField';
 
-const DatePicker = (props) => {
-    const [selectedDay, setDate] = useState(new Date('1999-01-01'));
-    const Format = "yyyy-MM-dd";
+const useStyles = makeStyles(theme => ({
+  container: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  textField: {
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
+    width: 200,
+  },
+}));
 
-    const handleDate = (e, newValue) => {
-        setDate(newValue);
+
+
+export default function DatePicker (props) {
+
+    const classes = useStyles();
+    const [value, setValue] = useState(props.value)
+
+    const handleChange = event => {
+      setValue(event.target.value)
+      props.dateChange(event.target.id, event.target.value)
     }
-
-    useEffect(() => setDate(props.value))
-
-
+  
     return (
-        <Fragment>
-            <DayPickerInput onChange={handleDate} format={Format}  placeholder={`${dateFnsFormat(new Date(), Format)}`}/>
-        </Fragment>
-    )
-}
-
-export default DatePicker;
+        <TextField
+          id={props.id}
+          key={props.id}
+          type="date"
+          value={value}
+          fullWidth = {false}
+          style={{width:'180px'}}
+          onChange={handleChange}
+          className={classes.textField}
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+    );
+  }

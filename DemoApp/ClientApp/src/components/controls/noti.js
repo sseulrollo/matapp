@@ -1,4 +1,3 @@
-import React from 'react';
 import {toast} from 'react-toastify';
 
 export const notifyWarn = msg => toast.warn(msg, { autoClose: true });

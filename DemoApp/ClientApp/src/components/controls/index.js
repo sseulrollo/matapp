@@ -1,6 +1,4 @@
 import SearchCombo from './SearchCombo';
-import SelectRowTable from './SelectRowTable';
-import Dtepicker from './Dtepicker'
 import Loader from './Loader'
 import LabelInputField from './LabelInputField'
 import BasicButton from './BasicButton'
@@ -13,8 +11,6 @@ import { notifySuccess, notifyWarn } from './noti'
 
 export {
     SearchCombo,
-    SelectRowTable,
-    Dtepicker,
     Loader,
     LabelInputField,
     BasicButton,

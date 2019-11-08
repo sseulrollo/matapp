@@ -1,25 +1,20 @@
 import React, {useState, useEffect, createRef} from 'react';
 import PropTypes from 'prop-types';
-import clsx from 'clsx';
-import { lighten, makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Paper from '@material-ui/core/Paper';
-import Checkbox from '@material-ui/core/Checkbox';
-import { } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles';
+import { 
+  Checkbox, 
+  Paper, 
+  Table, TableRow,TableCell,TableHead,TableBody,
+  TableSortLabel, TablePagination
+  
+} from '@material-ui/core'
 
-import { toast } from 'react-toastify'
+import { notifyWarn } from './noti'
 
 import { connect } from 'react-redux';
 
 import { bindActionCreators } from 'redux';
 import { actionCreators } from '../../store/Spcall';
-import { TableHeader } from 'semantic-ui-react';
 
 
 function desc(a, b, orderBy) {
@@ -66,6 +61,7 @@ function EnhancedTableHead(props) {
 
   
   const MakeHeader = () => {
+    console.log(header)
     const lst = header.map(headCell => {
         
       if (headCell.name === "@@chk" || headCell.name === "@@CHK")
@@ -91,7 +87,7 @@ function EnhancedTableHead(props) {
       return <TableRow key="headerRow">{lst}</TableRow>
     }
     
-    return <TableHeader><MakeHeader /></TableHeader>;
+    return <TableHead><MakeHeader /></TableHead>;
   }
 
 
@@ -110,14 +106,17 @@ EnhancedTableHead.propTypes = {
 const useStyles = makeStyles(theme => ({
   root: {
     width: '100%',
-    marginTop: theme.spacing(3),
+    maxHeight: 450,
+    overflow:'hidden',
+    marginTop: theme.spacing(1),
   },
   paper: {
-    width: '100%',
-    marginBottom: theme.spacing(2),
+    width: '98%',
+    height: '94%',
+    margin: theme.spacing(0.5),
   },
   table: {
-    minWidth: 750,
+    minWidth: 330,
   },
   tableWrapper: {
     overflowX: 'auto',
@@ -135,25 +134,19 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const notifyWarn = msg => toast.warn(msg, { autoClose: true})
-const notifySuccess = msg => toast.success(msg, { autoClose: true})
-
-
 function CheckTable(props) {
   const classes = useStyles();
+  const [header, setHeader] = useState(props.initialHeader);
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('');
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rowsPerPage, setRowsPerPage] = React.useState(props.rowsPerPage ? props.rowsPerPage : 7);
   const [tableParam, setTableParam] = useState(props.tableParam);
-  const [selectParams, setSelectParams] = useState(props.selectParams);
+  //const [selectParams, setSelectParams] = useState(props.selectParams);
 
-  const [header, setHeader] = useState(props.header);
   const [tableData, setTableData] = useState(props.initialData)
-  const [dataChanges, setDataChanges] = useState(false);
-
-  
+ 
   const setAllClear = createRef();
 
   useEffect(() => {
@@ -164,34 +157,17 @@ function CheckTable(props) {
       getData(props.selectParams);
     } else if(props.delFlag !== 'none')
       removeData(props.delFlag)
-    else if (header && orderBy === ''){
+    else if (header && orderBy === '' && header.length > 0){
       if(header.filter(r => r === "@@key").length > 0) {
         setOrderBy("@@key")
       } else if (header.filter(r => r === "@@KEY").length > 0) {
         setOrderBy("@@KEY")
-      } else if (header[0] !== "@@chk" && header[0] !== "@@CHK" && !header[0].startsWith("@@")){
+      } else if (header.length > 0 && header[0] !== "@@chk" && !header[0].split(0,2) === "@@"){
         setOrderBy(header[0])
       } else {
         let lst = header.filter(r => !r.startsWith("@@"));
         setOrder(lst[0])
       }
-    } else if (dataChanges) {
-      if(props.spCall.status === "SUCCESS"){
-        if(!props.spCall.header)
-          setHeader(props.spCall.header)
-
-        if(tableParam)
-          setTableData(
-            tableData === props.initialData ? 
-                props.spCall.data : 
-                tableData.concat(props.spCall.data)
-          )
-        else
-          setTableData(props.spCall.data);
-      } else 
-        {notifyWarn(props.spCall.message)}
-
-      setDataChanges(false)
     }
   })
 
@@ -209,7 +185,19 @@ function CheckTable(props) {
     }        
 
     return props.loadSingleRequest(loadSp, tableParam)
-            .then(() => setDataChanges(true))
+            .then(res => {
+              if(res.response.err)
+                notifyWarn(props.spCall.message)
+              else {
+                // if(!header || (props.spCall.header.length > 0 && header !== props.spCall.header))
+                //   setHeader(props.spCall.header)
+        
+                setTableData(
+                  tableData === props.initialData ? 
+                      props.spCall.data : 
+                      tableData.concat(props.spCall.data)
+                )               
+            }})
             .catch(e => {notifyWarn(e)}
             )
   }
@@ -218,7 +206,16 @@ function CheckTable(props) {
     const {loadSp} = props;
    
     return props.loadSingleRequest(loadSp, params)
-    .then(() => setDataChanges(true));
+    .then(res => {
+      if(res.response.err)
+        notifyWarn(props.spCall.message)
+      else {
+        // if(!header || (!props.spCall.header && header !== props.spCall.header))
+        //   setHeader(props.spCall.header)
+
+        setTableData(props.spCall.data);       
+    }})
+    .catch(e => {notifyWarn(e)});
   }
 
   const removeData = (flag) => {
@@ -229,8 +226,7 @@ function CheckTable(props) {
         let temp = '';
         selected.forEach(element => {                
             temp = temp + "," + element
-        });
-        props.onSave(temp.substr(1));
+        });        
     }
 
     let lst = tableData;
@@ -288,17 +284,19 @@ function CheckTable(props) {
 
   const isSelected = name => selected.indexOf(name) !== -1;
 
+  console.log(header)
+
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, tableData.length - page * rowsPerPage);
-  
   return (
-    <div className={classes.root}>
+    <div className={classes.root} style={{height:props.height}}>
       <Paper className={classes.paper}>
         <div className={classes.tableWrapper}>
           <Table
             className={classes.table}
             aria-labelledby="tableTitle"
-            size='medium'
+            size='small'
             aria-label="enhanced table"
+            stickyHeader
           >
             <EnhancedTableHead
               classes={classes}
@@ -369,15 +367,19 @@ function CheckTable(props) {
                 })}
               {emptyRows > 0 && (
                 <TableRow style={{ height: 40 * emptyRows }}>
-                  <TableCell colSpan={6} />
+                  <TableCell colSpan={7} />
                 </TableRow>
               )}
             </TableBody>
           </Table>
         </div>
         <TablePagination
-          rowsPerPageOptions={[10, 20, 40]}
-          component="div"
+          rowsPerPageOptions={[rowsPerPage, rowsPerPage*2, rowsPerPage*3]}
+          SelectProps={{
+            inputProps: { 'aria-label': '줄 수'}
+            
+          }}
+          component="small"
           count={tableData.length}
           rowsPerPage={rowsPerPage}
           page={page}

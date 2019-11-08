@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Select, MenuItem, InputLabel } from '@material-ui/core';
+import { Select, MenuItem } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { notifySuccess, notifyWarn } from './noti'
+import { notifyWarn } from './noti'
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -17,7 +17,7 @@ const useStyles = makeStyles(theme => ({
       marginTop: theme.spacing(2),
     },
   }));
-  
+
 
 const Selects = (props) => {
     const [value, setValue] = useState("");
@@ -40,7 +40,6 @@ const Selects = (props) => {
     }
 
     useEffect(() => {
-
         if (bindFlag) {
             if(props.spCall.status === "SUCCESS") {
                 bindingData();
@@ -63,7 +62,6 @@ const Selects = (props) => {
         const head = props.spCall.header;
         const data = props.spCall.data;
 
-        console.log(comboData, data, head)
         if(data.length > 0)
             data.forEach(row => {
                 comboData.push({

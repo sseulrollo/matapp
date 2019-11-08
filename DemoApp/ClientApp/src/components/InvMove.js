@@ -1,12 +1,11 @@
 import React, { Component } from 'react'
-import { SearchCombo, SelectRowTable, LabelInputField, BasicButton, CloseButton, CheckTable } from './controls'
+import { SearchCombo, LabelInputField, BasicButton, CloseButton, CheckTable, notifyWarn } from './controls'
 import { connect } from 'react-redux';
 
 import { bindActionCreators } from 'redux';
 import { actionCreators } from '../store/Spcall';
 import { Form, Button } from 'semantic-ui-react'
 
-import {toast} from 'react-toastify';
 
 const initialHeader = [
     "@@CHK",
@@ -53,9 +52,6 @@ class InvMove extends Component {
         this.handleCboChange = this.handleCboChange.bind(this);
     }
 
-    notifyWarn = msg => toast.warn(msg, { autoClose: true });
-    notifySuccess = msg => toast.success(msg, { autoClose: true })
-
 
     handleChange = (e) => {
         e.preventDefault();
@@ -94,7 +90,7 @@ class InvMove extends Component {
         }
 
         this.props.executeRequest(save_sp, param)
-            .catch(e => this.notifyWarn(e))
+            .catch(e => notifyWarn(e))
     }
 
     handleDel = (e) => {

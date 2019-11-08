@@ -1,19 +1,25 @@
 import React, { Component } from 'react'
 import HeaderBar from '../components/HeaderBar'
 import BottomNav from '../components/BottomNav'
-import {Visibility, Button} from 'semantic-ui-react'
+import {Visibility, Button } from 'semantic-ui-react'
 
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { actionCreators } from '../store/HandlePage';
 
 class Routes extends Component {
 
   state = {
     menuFixed: false,
     overlayFixed: false,
-    intervalId: 0
+    intervalId: 0,
+    navi: 'Prototype'
   }
 
   constructor(props) {
     super(props)
+
+    console.log(this)
     
     this.scrollToTop = this.scrollToTop.bind(this)
   }
@@ -30,12 +36,14 @@ class Routes extends Component {
     this.setState({ intervalId: intervalId });
   }
 
-  stickTopMenu = () => this.setState({ menuFixed: true })
-  unStickTopMenu = () => this.setState({ menuFixed: false })
+  stickTopMenu = () => this.props.fixMenu(); //this.setState({ menuFixed: true })
+  unStickTopMenu = () => this.props.unFixMenu(); //this.setState({ menuFixed: false })
+
+  routeChange = (value) => this.setState({navi: value})
 
   render() {
-    const { menuFixed} = this.state
-    const {children} = this.props
+    // const { menuFixed} = this.state
+    const {children, menuFixed} = this.props
     
     return (
       <div>
@@ -44,20 +52,23 @@ class Routes extends Component {
           onBottomVisible={this.unStickTopMenu}
           once={false}
         >
-          <HeaderBar props={this.props} menuFixed={menuFixed}/>
+          <HeaderBar props={this.props} menuFixed={menuFixed} route={this.state.navi}/>
         </Visibility>
-        {children}
-        <div
+        <div >
+          {children}
+        </div>
+        {menuFixed ? <div
           style={{position:'fixed', padding:'0em',  margin:'0em', bottom:'5em', right:'0.5em', 
                   border:'none'}}>
           <Button icon='arrow up' size="medium" circular onClick={this.scrollToTop} />
-        </div>
+        </div> : <div></div>}
+        
         <footer  
           style={{
               position: 'fixed', margin: '0em', bottom: '0em', left: '0',
               border: 'none', backgroundColor: 'white', padding: '0em', width: '100%'
           }}>          
-          <BottomNav props={this.props} />
+          <BottomNav props={this.props} routeChange={this.routeChange} />
         </footer>
       </div>
     )
@@ -65,4 +76,9 @@ class Routes extends Component {
 }
 
 
-export default Routes
+// export default Routes
+
+export default connect(
+  state => state.pages,
+  dispatch => bindActionCreators(actionCreators, dispatch)
+)(Routes);

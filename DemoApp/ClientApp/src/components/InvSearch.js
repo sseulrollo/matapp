@@ -1,14 +1,22 @@
 import React, { Component, createRef } from 'react'
-import { SearchCombo, CheckTable, BasicButton, CloseButton, DatePicker} from './controls'
+import { 
+    SearchCombo, 
+    CheckTable, 
+    BasicButton, 
+    CloseButton, 
+    DatePicker,
+    notifyWarn,
+    notifySuccess
+} from './controls'
 import { connect } from 'react-redux';
 
 import { bindActionCreators } from 'redux';
 import { actionCreators } from '../store/Spcall';
-import { Form, Button } from 'semantic-ui-react'
 
 import update from 'immutability-helper';
+import { Typography, Grid, InputLabel } from '@material-ui/core';
 
-import { toast } from 'react-toastify';
+import Moment from 'moment';
 
 const initialHeader = [
     "품번",
@@ -35,7 +43,7 @@ class InvSearch extends Component {
         header: initialHeader,
         data: initialData,
         work_shop: '',
-        workdate: new Date(),
+        workdate: Moment(new Date()).format('YYYY-MM-DD'),
         selectParams: {
             work_shop: '',
             workdate: ''
@@ -49,10 +57,6 @@ class InvSearch extends Component {
         super(props)
         this.handelSearch = this.handelSearch.bind(this)
     }
-
-    notifyWarn = msg => toast.warn(msg, { autoClose: true });
-    notifySuccess = msg => toast.success(msg, { autoClose: true })
-
 
     handleChange = (e) => {
         e.preventDefault();
@@ -76,10 +80,10 @@ class InvSearch extends Component {
         })
     }
     
-    handleDteChange = (id, value, param) => {
+    handleDteChange = (id, value) => {
         this.setState((prevState) => {
             return update(prevState, {
-                selectParams: { [id]: { $set : param }},
+                selectParams: { [id]: { $set : value }},
                 [id]: { $set : value}})
         })
     }
@@ -88,7 +92,7 @@ class InvSearch extends Component {
 
     handelSearch = (e) => {
         e.preventDefault();
-
+        
         this.setState({
             searchFlag: true
         })
@@ -99,62 +103,68 @@ class InvSearch extends Component {
             this.setState({
                 searchFlag: false
             })
-        return nextProps !== this.props || nextState !== this.state
+        console.log(this.state.header)
+        return this.state.header !== [] && (nextProps !== this.props || nextState !== this.state)
     }
 
     getValue = (id) => this.state[id];
 
     contextRef = createRef()
     render() {
-
         const { header, data, selectParams, table_sp, searchFlag } = this.state
-        console.log(header, this.state)
+        
         return (
-            <div border='none'>
-                <div ref={this.contextRef} border='none'>
-                    <div style={{ backgroundColor: 'white', padding: '1em', border: 'none'}}>
-                        <Form>
-                            <Form.Field key='toDate'>
-                                <label key='lbltoDate' >
-                                    작업장
-                                    </label>
-                                <SearchCombo
-                                    id="work_shop"
-                                    key="work_shop"
-                                    className="form-control"
-                                    groupid="LOC_TYPE"
-                                    onChange={this.handleCboChange}
-                                    value={this.getValue("work_shop")}
-                                    searchEnd={this.handleEventEnd} />
-                            </Form.Field>
-                            <Form.Field key='toWorkshop'>
-                                <label key='lbltoWorkshop' >
-                                    이동일자
-                                    </label>
-                                <DatePicker value={this.getValue("workdate")}  />                                
-                            </Form.Field>
-                        </Form>
+            <div style={{ margin: '1em',  }}>
+                <Grid container spacing={1} justify="center" 
+                    alignItems="center" 
+                    style={{backgroundColor:'white'}}>
+                    <Grid xs={5} item >
+                        <Typography component="p" gutterBottom align="right" 
+                            style={{marginRight:'2em'}}>
+                            작업장
+                        </Typography>
+                    </Grid>
+                    <Grid xs={7} item>
+                        <SearchCombo
+                            id="work_shop"
+                            key="work_shop"
+                            className="form-control"
+                            groupid="LOC_TYPE"
+                            onChange={this.handleCboChange}
+                            value={this.getValue("work_shop")}
+                            searchEnd={this.handleEventEnd} />
+                    </Grid>
+                    <Grid item xs={5} style={{marginTop:'1em'}}>
+                        <Typography component="p" gutterBottom align="right" style={{marginRight:'2em'}}>
+                            이동일자
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={7} style={{marginTop:'1em'}}>
+                        <DatePicker 
+                            id='workdate' 
+                            value={this.getValue("workdate")}  
+                            dateChange={this.handleDteChange}/>                                
+                    </Grid>
+                </Grid>
+                <Grid container justify="flex-end" alignItems="center"
+                    style={{backgroundColor:'white',
+                    position: this.props.menuFixed ? 'fixed' : 'static',
+                    marginTop:'1em'}}>
+                    <BasicButton name="btnOk" onclick={this.handelSearch} label="조회" />
+                    <CloseButton history={this.props.history} />
+                </Grid>
                         
-                        <CheckTable  id="tolots"
-                            initialHeader={header}
-                            initialData={data}
-                            loadSp={table_sp}
-                            selectParams={selectParams}
-                            searchFlag={searchFlag} />
-                        <div style={{ height: '3em', border: 'none' }}></div>
-                    </div>
-                </div>
-                <div
-                    style={{
-                        position: 'fixed', margin: '0em', bottom: '4.5em', left: '0',
-                        border: 'none',
-                        backgroundColor: 'white', padding: '0.5em', width: '100%'
-                    }}>
-                    <Button.Group widths='2' basic floated='left'>
-                        <BasicButton name="btnOk" onclick={this.handelSearch} label="조회" />
-                        <CloseButton history={this.props.history} />
-                    </Button.Group> 
-                </div>
+                <div style={{marginTop:'1em'}}>
+                    <CheckTable  id="tolots"
+                        header={header}
+                        initialHeader={initialHeader}
+                        initialData={data}
+                        loadSp={table_sp}
+                        height='360px'
+                        rowsPerPage={5}
+                        selectParams={selectParams}
+                        searchFlag={searchFlag} />
+                </div>  
             </div>
         )
     }

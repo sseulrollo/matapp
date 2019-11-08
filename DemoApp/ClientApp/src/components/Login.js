@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Form, Grid, Header, Segment} from 'semantic-ui-react';
+import { Form, Grid, Header} from 'semantic-ui-react';
 import { actionCreators } from '../store/Authentication';
 import { bindActionCreators } from 'redux';
 import Cookies from 'js-cookie';

@@ -12,7 +12,7 @@ function requestCall(url, param) {
         body: JSON.stringify(param)
     })
     .then(response => response.data)
-    .catch(e => console.log(e));
+    .catch(e => e);
 }
 
 
@@ -64,8 +64,6 @@ export function getCodeDynamic(groupid, where) {
             Where: where === undefined || where === null ? {} : where,
         }
     }
-
-    console.log(groupid, where)
     
     return requestCall('api/Common/CodeDynamic', param)
 }

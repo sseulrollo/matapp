@@ -13,6 +13,7 @@ const DB_SELECT_SUCCESS = 'SELECT_SUCCESS';
 const DB_EXECUTE_SUCCESS = 'EXECUTE_SUCCESS';
 const DB_DOUBLE_SELECT = 'DOUBLE_SELECT';
 const DB_FAIL = 'FAIL';
+const PREPARE_ERROR = 'PREPARE_ERROR'
 const DB_INIT = 'INIT'
 
 const initialState = {
@@ -26,7 +27,11 @@ const initialState = {
 
 export const actionCreators = {
     loadRequest: (spname, params) => async (dispatch, getState) => {  
-
+        if(spname === undefined){
+            dispatch({type:PREPARE_ERROR, action: {err:'SP를 입력해주세요'}})
+            return;
+        }
+        
         dispatch({type:DB_REQUEST});    
         return selectSp(spname, params)
                 .then(
@@ -37,6 +42,10 @@ export const actionCreators = {
         
     },
     loadSingleRequest: (spname, params) => async (dispatch, getState) => {   
+        if(spname === undefined){
+            dispatch({type:PREPARE_ERROR, action: {err:'SP를 입력해주세요'}})
+            return;
+        }
         
         dispatch({type:DB_REQUEST});
         
@@ -49,7 +58,11 @@ export const actionCreators = {
         
     },    
     executeRequest : (spname, params) => (dispatch, getState) => {   
-      
+        if(spname === undefined){
+            dispatch({type:PREPARE_ERROR, action: {err:'SP를 입력해주세요'}})
+            return;
+        }
+
         dispatch({type:DB_REQUEST});
         
         return executeSp(spname, params)
@@ -63,6 +76,10 @@ export const actionCreators = {
     },
     
     codeRequest : (groupid, where) => async (dispatch, getState) => {
+        if(groupid === undefined || groupid === ''){
+            dispatch({type:PREPARE_ERROR, action: {err:'그룹아이디가 없습니다.'}})
+            return;
+        }
         
         dispatch({type:DB_REQUEST});
         return await getCode(groupid, where)
@@ -74,9 +91,10 @@ export const actionCreators = {
     },
     
     codeDynamicReq : (groupid, where) => async (dispatch, getState) => {
-        
-        if(groupid === undefined && where === undefined)
-            return;        
+        if(groupid === undefined || groupid === ""){
+            dispatch({type:PREPARE_ERROR, action: {err:'그룹아이디가 없습니다.'}})
+            return;
+        }
         
         dispatch({type:DB_REQUEST});
 
@@ -143,6 +161,17 @@ export const reducer = (state, action) => {
             }            
         }
     if (action.type === DB_DOUBLE_SELECT){
+        console.log(action.response)
+        return {
+            ...state,
+            spCall : {
+                status: action.response.err ? 'FAIL' : 'SUCCESS',
+                data: action.response.data,
+                message: action.response.err,
+                header: action.response.header
+            }
+    }}
+    if (action.type === PREPARE_ERROR){
         return {
             ...state,
             spCall : {

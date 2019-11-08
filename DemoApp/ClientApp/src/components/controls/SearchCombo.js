@@ -1,11 +1,9 @@
 import React, {Component} from 'react'
-import PropTypes, { array } from 'prop-types'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { actionCreators } from '../../store/Spcall'
 import { bindActionCreators } from 'redux';
 import Loader from './Loader'
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 
 class SearchCombo extends Component {
@@ -29,8 +27,6 @@ class SearchCombo extends Component {
 
     handleChange = (e, { value }) => {
         e.preventDefault();
-
-        console.log(value);
 
         this.setState({
              value
@@ -56,7 +52,6 @@ class SearchCombo extends Component {
             if (where === ''){
                 this.props.codeRequest(groupid)
                     .then(()=> {
-                        console.log(this.props)
                         if (this.props.spCall.status === "SUCCESS"){
                             header = this.props.spCall.header
                             data = this.props.spCall.data;
@@ -114,16 +109,15 @@ class SearchCombo extends Component {
 
         if (data !== undefined || data !== [])
             return (
-              <FormControl >
-                    <Select
-                        native
-                        onChange={this.handleChange2} >   
-                        <option value="" />
-                        {Object.entries(data).map((post, index)=>{
-                             return <option key={index} value={post[1].value}>{post[1].text}</option>
-                        })}
-                    </Select>
-              </FormControl>                
+                <Select
+                    native
+                    onChange={this.handleChange2} 
+                    style={{width:'185px'}}>   
+                    <option value="" />
+                    {Object.entries(data).map((post, index)=>{
+                            return <option key={index} value={post[1].value}>{post[1].text}</option>
+                    })}
+                </Select>               
             )
         else
             return (<Loader />)

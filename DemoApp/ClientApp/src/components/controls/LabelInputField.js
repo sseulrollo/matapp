@@ -29,9 +29,10 @@ export default function OutlinedTextFields(props) {
         onChange={props.onChange}  
         className={classes.textField}
         type={props.type ? 'password' : 'text' }
+        fullWidth = {props.isfull !== undefined ? props.isfull : false}
         //type="password"
         margin="dense"
-        variant="outlined"
+        variant= {props.isfull !== undefined ? "standard" : "outlined" }
       />
   );
 }

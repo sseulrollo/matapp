@@ -1,16 +1,19 @@
-import React, {useState, Fragment, useEffect, useRef, createRef } from 'react';
+import React, {useState, useEffect, createRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Card, CardActions, CardContent, Typography, CardHeader, Checkbox } from '@material-ui/core';
+import { Card, CardContent, Typography, CardHeader, Checkbox } from '@material-ui/core';
 
 import { connect } from 'react-redux';
 
 import { bindActionCreators } from 'redux';
 import { actionCreators } from '../../store/Spcall';
-import { notifyWarn, notifySuccess } from "./noti";
+import { notifyWarn } from "./noti";
 
 const useStyles = makeStyles({
     card: {
-        minWidth: 150,
+        minWidth: 120,
+        border: 'solid',
+        borderWidth: '1',
+        borderColor:'#f2f2f2'
     },
     title: {
         fontSize: 14,
@@ -25,29 +28,28 @@ const CardList = (props) => {
     const [header, setHeader] = useState(props.header)
     const [title, setTitle] = useState(props.title ? props.title : "");
     const [main, setMain] = useState(props.main)
-    const [listUp, setListUp] = useState(undefined);
     const [tableParam, setTableParam] = useState({});
     const [selected, setSelected] = useState([])
+    const [stopFlag, setStop] = useState(false)
 
     const setAllClear = createRef();
 
     useEffect(() => {
-        if(listUp){
-            if (props.spCall.status === "SUCCESS")
-                changeData(props.spCall.data);
-            else
-                notifyWarn(props.spCall.message)
-            setListUp(undefined)
-        } else if (tableParam !== props.tableParam && props.tableParam !== {}){
+        if (tableParam !== props.tableParam && props.tableParam !== {}){
             getAddData(props.tableParam)
         } else if(props.selectParams !== [] && props.searchFlag){  
             getData(props.selectParams);
-        } else if(props.delFlag !== 'none')
-            removeData(props.delFlag)
+        } else if(!stopFlag && props.delFlag !== 'none' && selected && selected.length > 0) {
+            setStop(true)
+
+            if(props.delFlag === 'save')
+                saveData();
+            else
+                removeData();//props.delFlag)
+        }
     })
 
     const getAddData = (tableParam) => {
-
         const {loadSp, checkSame, checkValue} = props;
         setTableParam(props.tableParam)
         
@@ -63,37 +65,55 @@ const CardList = (props) => {
         }         
 
         return props.loadSingleRequest(loadSp, tableParam)
-                .then(() => setListUp('add'))
-                .catch(e => {notifyWarn(e)}
-                )
+                .then(res => {
+                    if(res.response.err)
+                        notifyWarn(res.response.err)
+                    else
+                        changeData(res.response.data, 'add')
+                })
+                .catch(e => {notifyWarn(e)})
       }
     
       const getData = (params) => {
         const {loadSp} = props;
-       
         return props.loadSingleRequest(loadSp, params)
-        .then(() => setListUp('all'));
+        .then(res => {
+            if(res.response.err)
+                notifyWarn(res.response.err)
+            else
+                changeData(res.response.data, 'all')
+        })
+        .catch(e => {notifyWarn(e)});
       }
-    
-      const removeData = (flag) => {
-        if(selected === undefined || selected.length === 0)
-            return
-                    
-        if (flag === 'save'){
-            let temp = '';
-            selected.forEach(element => {                
-                temp = temp + "," + element
-            });
-            props.onSave(temp.substr(1));
+
+      const saveData = () => {
+        
+        let temp = '';
+        selected.forEach(element => {                
+            temp = temp + "," + element
+        });
+
+        const saveParamData = {
+            ...props.saveParam, 
+            "PARAMS": temp.substr(1)
         }
 
+        props.executeRequest(props.saveSp, saveParamData)
+        .then(m => {
+            removeData();
+        })
+        .catch(e => notifyWarn(e))
+
+      }
+    
+      const removeData = () => {
         let lst = data;
-        // 소문자 @@key check 도 필요
+        
         selected.map(item => lst = lst.filter(row => row.id !== item))
     
         changeData(lst);
-        setAllClear.current.click();
         props.editEndEvent();    
+        setStop(false);
     }
 
     const handleSelectAllClick = event => {
@@ -127,10 +147,10 @@ const CardList = (props) => {
     
     const isSelected = id => selected.indexOf(id) !== -1;
 
-    const changeData = (paramData) => {
+    const changeData = (paramData, type) => {
         let returnData = [];
 
-        if(listUp === 'add')
+        if(type === 'add')
             returnData = data;
 
         paramData.map((item, index) => {
@@ -171,9 +191,9 @@ const CardList = (props) => {
     const classes = useStyles();
     
     return (
-        <Fragment>
-            <div>
-                <Typography component="h4" >
+        <div >
+            <div style={{marginTop:'1em', }}>
+                <Typography component="h6" >
                     <Checkbox 
                         key={"cboall_" + props.key} 
                         onChange={handleSelectAllClick}
@@ -183,29 +203,31 @@ const CardList = (props) => {
                     전체 선택
                 </Typography>
             </div>
-            {data && data.length > 0 ? data.map(item => 
-                <Card 
-                    className={classes.card}
-                    key={'card' + item.id}>
-                    <CardHeader 
-                        title={item.main} 
-                        action={
-                            <Checkbox 
-                                key={item.id}
-                                checked={isSelected(item.id)}
-                                onClick={e => handleClick(e, item.id)} />
-                        }
-                    />
-                    <CardContent>                
-                        {item.content.map((li, index) => {
-                            return (
-                            <Typography variant="body2" component="p" key={item.id + 'content' + index}>
-                                {li.id + ' : ' + li.value}
-                            </Typography>)})}
-                    </CardContent>
-                </Card>
-            ) : <div></div>}
-        </Fragment>
+            <div style={{maxHeight: '310px', overflowY:'auto'}}>
+                {data && data.length > 0 ? data.map(item => 
+                    <Card 
+                        className={classes.card}
+                        key={'card' + item.id}>
+                        <CardHeader 
+                            title={item.main} 
+                            action={
+                                <Checkbox 
+                                    key={item.id}
+                                    checked={isSelected(item.id)}
+                                    onClick={e => handleClick(e, item.id)} />
+                            }
+                        />
+                        <CardContent>                
+                            {item.content.map((li, index) => {
+                                return (
+                                <Typography variant="body2" component="p" key={item.id + 'content' + index}>
+                                    {li.id + ' : ' + li.value}
+                                </Typography>)})}
+                        </CardContent>
+                    </Card>
+                ) : <div></div>}
+            </div>
+        </div>
     )
 }
 

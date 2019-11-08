@@ -5,12 +5,13 @@ import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import HistoryIcon from '@material-ui/icons/History';
 import { Link } from 'react-router-dom'
 
-const BottomNav = (props) => {
+const BottomNav = ({props, routeChange}) => {
 
     const [value, setValue] = useState('/');
 
     const handleChange = (e, newValue) => {
         setValue(newValue);
+        routeChange(newValue)
     }
 
     return (
@@ -18,10 +19,10 @@ const BottomNav = (props) => {
             value={value}
             onChange={handleChange}
             showLabels>
-            <BottomNavigationAction label="Home" value="/" icon={<HomeIcon />} component={Link} to="/" />
-            <BottomNavigationAction label="재고이동" value="/imove" icon={<ShoppingCartIcon />} component={Link} to="/imove" />
-            <BottomNavigationAction label="이동이력" value="/isearch" icon={<HistoryIcon />} component={Link} to="/isearch" />
-            <BottomNavigationAction label="재고이동2" value="/itrans" icon={<ShoppingCartIcon />} component={Link} to="/itrans" />
+            <BottomNavigationAction label="Home" value="Home" icon={<HomeIcon />} component={Link} to="/" />
+            {/* <BottomNavigationAction label="재고이동" value="재고이동" icon={<ShoppingCartIcon />} component={Link} to="/imove" /> */}
+            <BottomNavigationAction label="이동이력" value="이동이력" icon={<HistoryIcon />} component={Link} to="/isearch" />
+            <BottomNavigationAction label="재고이동" value="재고이동" icon={<ShoppingCartIcon />} component={Link} to="/itrans" />
         </BottomNavigation>
     )
 }

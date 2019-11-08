@@ -2,19 +2,6 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 
-const BasicButton = (props) => (
-    <Button 
-       variant="contained" 
-        color="inherit" 
-        type="submit" 
-        size={props.size ? props.size : 'large'}
-        onClick={props.onclick}
-        key={'btn' + props.name}
-        name={props.name}
-        >
-        {props.label}
-    </Button>
-)
 const useStyles = makeStyles(theme => ({
     button: {
       margin: theme.spacing(0.5),
@@ -28,20 +15,18 @@ const useStyles = makeStyles(theme => ({
     const classes = useStyles();
 
     return (
-        <div>
           <Button 
-          className={classes.button}
-          variant="contained" 
-         color="inherit" 
-         type="submit" 
-         //size={props.size ? props.size : 'large'}
-         onClick={props.onclick}
-         key={'btn' + props.name}
-         name={props.name}
-         >
-         {props.label}
+            className={classes.button}
+            variant="contained" 
+            color="inherit" 
+            type="submit" 
+            //size={props.size ? props.size : 'large'}
+            onClick={props.onclick}
+            key={'btn' + props.name}
+            name={props.name}
+          >
+            {props.label}
           </Button>
-         </div> 
     );
 }
 
