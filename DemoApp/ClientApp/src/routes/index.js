@@ -7,6 +7,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { actionCreators } from '../store/HandlePage';
 
+import Cookies from 'js-cookie';
+
 class Routes extends Component {
 
   state = {
@@ -23,6 +25,13 @@ class Routes extends Component {
     
     this.scrollToTop = this.scrollToTop.bind(this)
   }
+
+  componentDidMount() {
+    if(Cookies.get('key') === undefined || Cookies.get('key') === ""){
+      console.log(Cookies.get('key'))
+      if(window.location.href.split('/')[3] !== 'login')
+        window.location.href = '/login';
+  }}
 
   scrollStep() {
     if (window.pageYOffset === 0) {
@@ -45,31 +54,38 @@ class Routes extends Component {
     // const { menuFixed} = this.state
     const {children, menuFixed} = this.props
     
+    if (Cookies.get('key') !== undefined && Cookies.get('key') !== "")
+      return (
+        <div>
+          <Visibility
+            onBottomPassed={this.stickTopMenu}
+            onBottomVisible={this.unStickTopMenu}
+            once={false}
+          >
+            <HeaderBar props={this.props} menuFixed={menuFixed} route={this.state.navi}/>
+          </Visibility>
+          <div >
+            {children}
+          </div>
+          {menuFixed ? <div
+            style={{position:'fixed', padding:'0em',  margin:'0em', bottom:'5em', right:'0.5em', 
+                    border:'none'}}>
+            <Button icon='arrow up' size="medium" circular onClick={this.scrollToTop} />
+          </div> : <div></div>}
+          
+          <footer  
+            style={{
+                position: 'fixed', margin: '0em', bottom: '0em', left: '0',
+                border: 'none', backgroundColor: 'white', padding: '0em', width: '100%'
+            }}>          
+            <BottomNav props={this.props} routeChange={this.routeChange} />
+          </footer>
+        </div>
+      )
+  else 
     return (
       <div>
-        <Visibility
-          onBottomPassed={this.stickTopMenu}
-          onBottomVisible={this.unStickTopMenu}
-          once={false}
-        >
-          <HeaderBar props={this.props} menuFixed={menuFixed} route={this.state.navi}/>
-        </Visibility>
-        <div >
-          {children}
-        </div>
-        {menuFixed ? <div
-          style={{position:'fixed', padding:'0em',  margin:'0em', bottom:'5em', right:'0.5em', 
-                  border:'none'}}>
-          <Button icon='arrow up' size="medium" circular onClick={this.scrollToTop} />
-        </div> : <div></div>}
-        
-        <footer  
-          style={{
-              position: 'fixed', margin: '0em', bottom: '0em', left: '0',
-              border: 'none', backgroundColor: 'white', padding: '0em', width: '100%'
-          }}>          
-          <BottomNav props={this.props} routeChange={this.routeChange} />
-        </footer>
+        {children}
       </div>
     )
   }

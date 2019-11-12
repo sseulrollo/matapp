@@ -69,9 +69,9 @@ class Login extends Component {
     <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
         <Grid.Column style={{maxWidth: 300}}>
                 {/* 아이콘 생성 */}
-                <i class="yellow huge icons">
-                <i class="yellow big circle outline icon"></i>
-                <i class="yellow mobile alternate icon"></i>
+                <i className="yellow huge icons">
+                <i className="yellow big circle outline icon"></i>
+                <i className="yellow mobile alternate icon"></i>
                 </i>
             <Header as='h1' color='yellow' textAlign='center'>
              안드로이드 PDA

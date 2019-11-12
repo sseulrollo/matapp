@@ -33,7 +33,7 @@ export const actionCreators = {
                         document.cookie = 'key=' + btoa(JSON.stringify(loginData));
                         document.cookie = 'user_id=' + user_id;
 
-                        window.location.reload()
+                        window.location.href = '/'
 
                     }else {
                         dispatch({type: LOGIN_FAIL, response})

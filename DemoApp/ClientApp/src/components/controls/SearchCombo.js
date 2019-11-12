@@ -115,7 +115,10 @@ class SearchCombo extends Component {
                     style={{width:'185px'}}>   
                     <option value="" />
                     {Object.entries(data).map((post, index)=>{
-                            return <option key={index} value={post[1].value}>{post[1].text}</option>
+                            return <option key={index} 
+                                        value={post[1].value}>
+                                        {post[1].text}
+                                    </option>
                     })}
                 </Select>               
             )

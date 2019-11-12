@@ -104,7 +104,8 @@ const Selects = (props) => {
             inputlabel={inputLabel}//{props.inputlabel}
         >
             {selectData.map(item => 
-                <MenuItem value={item.key} key={'item' + props.key + item.key}>
+                <MenuItem value={item.key} 
+                    key={'item' + props.key + item.key}>
                     {item.text}
                 </MenuItem>
             )}

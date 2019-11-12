@@ -7,7 +7,7 @@ import { hot } from 'react-hot-loader/root'
 import Routes from './routes'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Cookies from 'js-cookie';
+
 import Login from './components/Login'
 
 
@@ -17,27 +17,7 @@ import InvSearch from './components/InvSearch'
 import InvTrans from './components/InvTrans'
 
 const App = ({ history }) => {
-  if(Cookies.get('key') === undefined || Cookies.get('key') === ""){
-    return (
-      <ConnectedRouter history={history}>
-        <Route exact path="/" component={Login} />
-        <ToastContainer
-              position="bottom-center"
-              autoClose={3000}
-              hideProgressBar={false}
-              newestOnTop
-              closeOnClick={false}
-              rtl={false}
-              className='toast-container'
-              toastClassName="dark-toast"
-              pauseOnVisibilityChange
-              draggable
-              pauseOnHover
-            />
-      </ConnectedRouter>
-      )
-  }
-  else {
+ 
     return (
       <ConnectedRouter history={history}>
         {/* { routes } */}
@@ -47,6 +27,7 @@ const App = ({ history }) => {
           <Route path="/imove" component={InvMove} />
           <Route path="/isearch" component={InvSearch} />
           <Route path="/itrans" component={InvTrans} />
+          <Route path="/login" component={Login} />
         </Routes>
         <ToastContainer
               position="bottom-center"
@@ -63,7 +44,6 @@ const App = ({ history }) => {
             />
       </ConnectedRouter>
     )
-  }
 }
 
 

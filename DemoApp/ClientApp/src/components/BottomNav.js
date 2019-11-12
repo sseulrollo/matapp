@@ -19,10 +19,12 @@ const BottomNav = ({props, routeChange}) => {
             value={value}
             onChange={handleChange}
             showLabels>
-            <BottomNavigationAction label="Home" value="Home" icon={<HomeIcon />} component={Link} to="/" />
-            {/* <BottomNavigationAction label="재고이동" value="재고이동" icon={<ShoppingCartIcon />} component={Link} to="/imove" /> */}
-            <BottomNavigationAction label="이동이력" value="이동이력" icon={<HistoryIcon />} component={Link} to="/isearch" />
-            <BottomNavigationAction label="재고이동" value="재고이동" icon={<ShoppingCartIcon />} component={Link} to="/itrans" />
+            <BottomNavigationAction label="Home" value="Home" 
+            icon={<HomeIcon />} component={Link} to="/" />
+            <BottomNavigationAction label="이동이력" value="이동이력" 
+            icon={<HistoryIcon />} component={Link} to="/isearch" />
+            <BottomNavigationAction label="재고이동" value="재고이동" 
+            icon={<ShoppingCartIcon />} component={Link} to="/itrans" />
         </BottomNavigation>
     )
 }
